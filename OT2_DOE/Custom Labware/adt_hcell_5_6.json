@@ -10,13 +10,13 @@
         ]
     ],
     "brand": {
-        "brand": "Pozzo",
+        "brand": "ADT",
         "brandId": [
-            "H_Cell_9_10"
+            "30mL_Hcell_5_6"
         ]
     },
     "metadata": {
-        "displayName": "pozzo_hcell_9_10",
+        "displayName": "ADT_30mL_Hcell_5_6",
         "displayCategory": "wellPlate",
         "displayVolumeUnits": "µL",
         "tags": []
@@ -32,8 +32,8 @@
             "totalLiquidVolume": 15000,
             "shape": "circular",
             "diameter": 17.80,
-            "x": 31.75,
-            "y": 71,
+            "x": 32,
+            "y": 70.51,
             "z": 50.15
         },
         "B1": {
@@ -41,17 +41,17 @@
             "totalLiquidVolume": 15000,
             "shape": "circular",
             "diameter": 17.8,
-            "x": 31.75,
-            "y": 14.38,
-            "z": 50.15
+            "x": 32,
+            "y": 14.95,
+            "z": 51.15
         },
         "A2": {
             "depth": 89.32,
             "totalLiquidVolume": 15000,
             "shape": "circular",
-            "diameter": 17.80,
-            "x": 95.28,
-            "y": 71,
+            "diameter": 17.8,
+            "x": 95.08,
+            "y": 70.51,
             "z": 50.15
         },
         "B2": {
@@ -59,8 +59,8 @@
             "totalLiquidVolume": 15000,
             "shape": "circular",
             "diameter": 17.8,
-            "x": 95.28,
-            "y": 14.38,
+            "x": 95.08,
+            "y": 14.95,
             "z": 50.15
         }
     },
@@ -82,7 +82,7 @@
         "quirks": [],
         "isTiprack": false,
         "isMagneticModuleCompatible": false,
-        "loadName": "pozzo_hcell_9_10"
+        "loadName": "adt_hcell_5_6"
     },
     "namespace": "custom_beta",
     "version": 1,

@@ -1,4 +1,4 @@
-OT2 Destination Labwares,"[""pozzo_hcell_1_2"",""pozzo_hcell_3_4"", ""corning_96_wellplate_360ul_flat"", ""corning_96_wellplate_360ul_flat""]"
+OT2 Destination Labwares,"[""adt_hcell_1_2"",""adt_hcell_3_4"", ""corning_96_wellplate_360ul_flat"", ""corning_96_wellplate_360ul_flat""]"
 OT2 Destination Labware Slots,"[""1"",""4"",""6"", ""9""]"
 OT2 Destination Labware Offset,"[[0,-1.5,0],[1,-1,0],[-0.2,0.6,0],[-0.4,0.6,0.0]]"
 OT2 Sample Labware Start,0

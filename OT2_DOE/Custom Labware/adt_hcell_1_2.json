@@ -10,58 +10,58 @@
         ]
     ],
     "brand": {
-        "brand": "Pozzo",
+        "brand": "ADT",
         "brandId": [
-            "H_Cell_7_8"
+            "22mL_Hcell_1_2"
         ]
     },
     "metadata": {
-        "displayName": "pozzo_hcell_7_8",
+        "displayName": "ADT_22mL_Hcell_1_2",
         "displayCategory": "wellPlate",
         "displayVolumeUnits": "µL",
         "tags": []
     },
     "dimensions": {
         "xDimension": 127.17,
-        "yDimension": 85.35,
-        "zDimension": 141
+        "yDimension": 85.64,
+        "zDimension": 138.18
     },
     "wells": {
         "A1": {
-            "depth": 89.32,
-            "totalLiquidVolume": 15000,
+            "depth": 83.5,
+            "totalLiquidVolume": 11000,
             "shape": "circular",
-            "diameter": 17.80,
-            "x": 30.89,
-            "y": 70.20,
-            "z": 50.15
+            "diameter": 8.31,
+            "x": 31,
+            "y": 71.14,
+            "z": 54.68
         },
         "B1": {
-            "depth": 89.32,
-            "totalLiquidVolume": 15000,
+            "depth": 83.5,
+            "totalLiquidVolume": 11000,
             "shape": "circular",
-            "diameter": 17.80,
-            "x": 30.89,
-            "y": 15.13,
-            "z": 50.15
+            "diameter": 8.31,
+            "x": 31,
+            "y": 19.23,
+            "z": 54.68
         },
         "A2": {
-            "depth": 89.32,
-            "totalLiquidVolume": 15000,
+            "depth": 83.5,
+            "totalLiquidVolume": 11000,
             "shape": "circular",
-            "diameter": 17.80,
-            "x": 95.83,
-            "y": 70.20,
-            "z": 50.15
+            "diameter": 8.31,
+            "x": 94.91,
+            "y": 71.14,
+            "z": 54.68
         },
         "B2": {
-            "depth": 89.32,
-            "totalLiquidVolume": 15000,
+            "depth": 83.5,
+            "totalLiquidVolume": 11000,
             "shape": "circular",
-            "diameter": 17.80,
-            "x": 95.83,
-            "y": 15.13,
-            "z": 50.15
+            "diameter": 8.31,
+            "x": 94.91,
+            "y": 19.23,
+            "z": 54.68
         }
     },
     "groups": [
@@ -82,7 +82,7 @@
         "quirks": [],
         "isTiprack": false,
         "isMagneticModuleCompatible": false,
-        "loadName": "pozzo_hcell_7_8"
+        "loadName": "adt_hcell_1_2"
     },
     "namespace": "custom_beta",
     "version": 1,

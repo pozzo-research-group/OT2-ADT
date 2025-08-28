@@ -22,11 +22,11 @@
         ]
     ],
     "brand": {
-        "brand": "20mLscintillation",
+        "brand": "20mLscintillation_even",
         "brandId": []
     },
     "metadata": {
-        "displayName": "20mLscintillation 12 Well Plate 18000 µL",
+        "displayName": "20mLscintillation_even 12 Well Plate 18000 µL",
         "displayCategory": "wellPlate",
         "displayVolumeUnits": "µL",
         "tags": []
@@ -34,116 +34,116 @@
     "dimensions": {
         "xDimension": 127.7,
         "yDimension": 85.8,
-        "zDimension": 60.5
+        "zDimension": 58
     },
     "wells": {
         "A1": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 21.81,
-            "y": 70.69,
-            "z": 7.5
+            "diameter": 16,
+            "x": 15.97,
+            "y": 71.56,
+            "z": 7
         },
         "B1": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 21.81,
-            "y": 42.86,
-            "z": 7.5
+            "diameter": 16,
+            "x": 15.97,
+            "y": 43.07,
+            "z": 7
         },
         "C1": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 21.81,
-            "y": 15.03,
-            "z": 7.5
+            "diameter": 16,
+            "x": 15.97,
+            "y": 14.58,
+            "z": 7
         },
         "A2": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 49.64,
-            "y": 70.69,
-            "z": 7.5
+            "diameter": 16,
+            "x": 47,91,
+            "y": 71.56,
+            "z": 7
         },
         "B2": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 49.64,
-            "y": 42.86,
-            "z": 7.5
+            "diameter": 16,
+            "x": 47.91,
+            "y": 43.07,
+            "z": 7
         },
         "C2": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 49.64,
-            "y": 15.03,
-            "z": 7.5
+            "diameter": 16,
+            "x": 47.91,
+            "y": 14.58,
+            "z": 7
         },
         "A3": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 77.47,
-            "y": 70.69,
-            "z": 7.5
+            "diameter": 16,
+            "x": 79.85,
+            "y": 71.56,
+            "z": 7
         },
         "B3": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 77.47,
-            "y": 42.86,
-            "z": 7.5
+            "diameter": 16,
+            "x": 79.85,
+            "y": 43.07,
+            "z": 7
         },
         "C3": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 77.47,
-            "y": 15.03,
-            "z": 7.5
+            "diameter": 16,
+            "x": 79.85,
+            "y": 14.58,
+            "z": 7
         },
         "A4": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 105.3,
-            "y": 70.69,
-            "z": 7.5
+            "diameter": 16,
+            "x": 111.79,
+            "y": 71.56,
+            "z": 7
         },
         "B4": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 105.3,
-            "y": 42.86,
-            "z": 7.5
+            "diameter": 16,
+            "x": 111.79,
+            "y": 43.07,
+            "z": 7
         },
         "C4": {
-            "depth": 53,
+            "depth": 51,
             "totalLiquidVolume": 18000,
             "shape": "circular",
-            "diameter": 27.85,
-            "x": 105.3,
-            "y": 15.03,
-            "z": 7.5
+            "diameter": 16,
+            "x": 111.79,
+            "y": 14.58,
+            "z": 7
         }
     },
     "groups": [
@@ -172,7 +172,7 @@
         "quirks": [],
         "isTiprack": false,
         "isMagneticModuleCompatible": false,
-        "loadName": "20mlscintillation_12_wellplate_18000ul"
+        "loadName": "20mlscintillationeven_12_wellplate_18000ul"
     },
     "namespace": "custom_beta",
     "version": 1,
