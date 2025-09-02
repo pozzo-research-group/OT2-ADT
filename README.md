@@ -7,7 +7,7 @@ A fork of the original OT2-DOE repo, which contains a group of python modules an
 
 This workflow has been designed to facilitate the testing and characterization of separations-based membranes using dual-compartment H-cells. 
 
-![Depiction of using the ADT workflow to assist in membrane diffusion testing.]("/assets/automated_diffusion_testing.png")
+![Depiction of using the ADT workflow to assist in membrane diffusion testing.](/assets/automated_diffusion_testing.png)
 
 
 ## Introduction
@@ -53,7 +53,7 @@ This repo contains all OT2-DOE content from the original pozzo-research-group/OT
 - The OT2 layout protocols (`H_cell_protocol_4hcell.csv`, `H_cell_protocol_8hcell.csv`) do not contain the robot-specific calibration offsets. These must be added before implementing the workflow.
 - the custom labware definitions for the H-cells (e.g., `adt_hcell_1_2.json`) ARE NOT equivalent to the wellplate designs in `Labware Designs/`. The opentrons defintion consists of the **entire dual H-cell assembly**. The labware definition simplifies the 4-component assembly into one very tall wellplate with round, flat-bottom wells. Therefore, all well spacing and depth measurements must be taken from this full assembly.
 
-![Figure depiction of a "dual H-cell assembly", which will be defined as a well plate in the Opentrons custom labware library.]("/assets/dual_hcell_assembly.png")
+![Figure depiction of a "dual H-cell assembly", which will be defined as a well plate in the Opentrons custom labware library.](/assets/dual_hcell_assembly.png)
 
 - The H-cell-to-sample plate mapping has been designed so that each H-cell chamber has a designated row in the sample plate, and each iteration (round of sampling) has a designated column.
 
