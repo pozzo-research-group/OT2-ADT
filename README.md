@@ -7,7 +7,7 @@ A fork of the original OT2-DOE repo, which contains a group of python modules an
 
 This workflow has been designed to facilitate the testing and characterization of separations-based membranes using dual-compartment H-cells. 
 
-![image]("\assets\automated_diffusion_testing.png")
+![Depiction of using ]("assets\automated_diffusion_testing.png")
 
 
 ## Introduction
@@ -27,39 +27,39 @@ You can install this package using the GitHub repository in following steps:
 
 ## Directory Organization
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
-- OT2-DOE/: directory with all files and modules
-  - ADT Data Analysis/: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the noteobook is also available.
-  - Custom Labware/: directory with customized hardware created for use with the OT2. The following .json files are the labware definitions created using the Opentrons custom labware tool. Each hcell file is unique to a specific dual H-cell assembly, as the custom builds and glassware all have slightly different measurements.
-    - 20mlscintillationeven_12_wellplate_18000ul.json
-    - adt_hcell_1_2.json (for the 22 mL total volume H-cells)
-    - adt_hcell_3_4.json (for the 22 mL total volume H-cells)
-    - adt_hcell_5_6.json (for the 30 mL total volume H-cells)
-    - adt_hcell_7_8.json (for the 30 mL total volume H-cells)
-    - adt_hcell_9_10.json (for the 30 mL total volume H-cells)
-  - Labware Designs/:
+- `OT2-DOE/`: directory with all files and modules
+  - `ADT Data Analysis/`: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the noteobook is also available.
+  - `Custom Labware/`: directory with customized hardware created for use with the OT2. The following .json files are the labware definitions created using the Opentrons custom labware tool. Each hcell file is unique to a specific dual H-cell assembly, as the custom builds and glassware all have slightly different measurements.
+    - `20mlscintillationeven_12_wellplate_18000ul.json`
+    - `adt_hcell_1_2.json` (for the 22 mL total volume H-cells)
+    - `adt_hcell_3_4.json` (for the 22 mL total volume H-cells)
+    - `adt_hcell_5_6.json` (for the 30 mL total volume H-cells)
+    - `adt_hcell_7_8.json` (for the 30 mL total volume H-cells)
+    - `adt_hcell_9_10.json` (for the 30 mL total volume H-cells)
+  - `Labware Designs/`:
     - contains the .stl and .step files for all 3D-printed hardware used in this workflow.
-  - Plan: 
-    - CreateSamples.py
-  - Prepare/:
-    - OT2Commands.py
-    - OT2_Hcell_commands.py
-  - Chemical Database.csv
-  - H_cell_protocol_4hcell.csv
-  - H_cell_protocol_8hcell.csv
-  - ADT_Hcell_Testing.ipynb
+  - `Plan/`: 
+    - `CreateSamples.py`
+  - `Prepare/`:
+    - `OT2Commands.py`
+    - `OT2_Hcell_commands.py`
+  - `Chemical Database.csv`
+  - `H_cell_protocol_4hcell.csv`
+  - `H_cell_protocol_8hcell.csv`
+  - `ADT_Hcell_Testing.ipynb`
 
 ### Important!
 
-- The OT2 layout protocols (H_cell_protocol_4hcell, H_cell_protocol_8hcell) do not contain the robot-specific calibration offsets. These must be added before implementing the workflow.
-- the custom labware definitions for the H-cells (e.g., adt_hcell_1_2.json) ARE NOT equivalent to the wellplate designs in `Labware Designs/`. The opentrons defintion consists of the **entire dual H-cell assembly**. The labware definition simplifies the 4-component assembly into one very tall wellplate with round, flat-bottom wells. Therefore, all well spacing and depth measurements must be taken from this full assembly.
+- The OT2 layout protocols (`H_cell_protocol_4hcell.csv`, `H_cell_protocol_8hcell.csv`) do not contain the robot-specific calibration offsets. These must be added before implementing the workflow.
+- the custom labware definitions for the H-cells (e.g., `adt_hcell_1_2.json`) ARE NOT equivalent to the wellplate designs in `Labware Designs/`. The opentrons defintion consists of the **entire dual H-cell assembly**. The labware definition simplifies the 4-component assembly into one very tall wellplate with round, flat-bottom wells. Therefore, all well spacing and depth measurements must be taken from this full assembly.
 
-![image]("\assets\dual_hcell_assembly.png")
+![Figure depiction of a "dual H-cell assembly", which will be defined as a well plate in the Opentrons custom labware library.]("assets\dual_hcell_assembly.png")
 
 - The H-cell-to-sample plate mapping has been designed so that each H-cell chamber has a designated row in the sample plate, and each iteration (round of sampling) has a designated column.
 
 |                | Iteration | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
-| H-cell chamber |           | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10| 11 | 12 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| H-cell chamber |           | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10| 11 | 12 |
 | H1_C1          |    A      |   |   |   |   |   |   |   |   |   |   |    |    |
 | H1_C2          |    B      |   |   |   |   |   |   |   |   |   |   |    |    |
 | H2_C1          |    C      |   |   |   |   |   |   |   |   |   |   |    |    |
@@ -73,13 +73,13 @@ This repo contains all OT2-DOE content from the original pozzo-research-group/OT
 ## Using this workflow
 ### In advance: hardware printing and labware definitions
 
-The 3D designs for the customized hardware can be found in `Labware Designs/`. The H-cell well plates are designed based on the H-cell specifications that can be found in the H_cell_specs.pdf. Notably, the 22 mL H-cells do not sit flush to a surface when assembled with the clamp, hence the added material below each chamber in the well plate design. 
+The 3D designs for the customized hardware can be found in `Labware Designs/`. The H-cell well plates are designed based on the H-cell specifications that can be found in the `assets/` folder. Notably, the 22 mL H-cells do not sit flush to a surface when assembled with the clamp, hence the added material below each chamber in the well plate design. 
 
 Dual stir plate construction:
 
 The dual stir plates were constructed by 3D printing the Dual_Stir_Plate_base and Dual_Stir_Plate_lid, then outfitting each unit with the components of two commerically available stir plates. The base and lid of the unit were designed as separate pieces so that the motors are connected to the lid and can separated from the base. The support columns on the lid were designed specifically for the stir plate design from [INTLLAB](https://www.amazon.com/Magnetic-stirrer-magnetic-Stirring-Capacity/dp/B072K24X5P). If using different hardware, the lid can be edited using the .step file. Images of the interiors of the stir plates can be found in the `assets/` folder.
 
-Once the dual H-cell assembly is created, a custom labware definition must be created for each unique assembly and added to the opentrons library. You can either create a new file using the labware definition creator tool from Opentrons, or edit the existing files in `Custom Labware`. Calibration and offsets must also be completed.
+Once the dual H-cell assembly is created, a custom labware definition must be created for each unique assembly and added to the opentrons library. You can either create a new file using the labware definition creator tool from Opentrons, or edit the existing files in `Custom Labware/`. Calibration and offsets must also be completed.
 
 ### Before starting the workflow
 
@@ -89,7 +89,7 @@ Membranes should be assembled in the H-cells. H-cells should be placed in the H-
   - with NO injection step: add 10.920 mL water to donor chamber (C1) and 11 mL water to receptor chamber (C2). Immediately before executing the protocol, add the 80 uL of stock dye to the donor chamber.
   - WITH the injection step: add 10.920 mL and 11 mL water to the donor and receptor chambers, respectively. Arrange the H-cells in the pre-determined layout in the OT2, and initiate the protocol. The robot will distribute the 80 uL of stock dye to each donor chamber (C1).
   
-The ADT_Hcell_Testing.ipynb notebook explains each step of the execution. There are several experiment-specific parameters that should be defined in advance:
+The `ADT_Hcell_Testing.ipynb` notebook explains each step of the execution. There are several experiment-specific parameters that should be defined in advance:
 - `path`: path used to obtain the protocol. The protocol could be `H_cell_protocol_4hcell.csv`, `H_cell_protocol_8hcell.csv`, or your own protocol with the same dictionary definitions and stucture as the provided protocols.
 - `log_metadata`: a dictionary containing experiment-specific metadata, useful for record keeping purposes. The information provided here will be saved to the output log file created during the experiment.
 - `aliquot_volume`: volume to be extracted from each H-cell chamber (in uL)

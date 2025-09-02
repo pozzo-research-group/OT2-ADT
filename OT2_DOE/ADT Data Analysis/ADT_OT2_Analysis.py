@@ -6,7 +6,24 @@ import matplotlib.lines as mlines
 from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
 
-def best_fit(X,Y):
+def best_fit(X,Y):   
+    '''
+    Compute the slope and intercept of the line of best fit using least squares.
+    
+    Parameters
+    ----------
+    X : array-like
+        Independent variable values
+    Y : array-like
+        Dependent variable values
+    
+    Returns
+    -------
+    m : float
+        Slope of the best-fit line
+    b : float
+        Intercept of the best-fit line
+    '''
     
     xbar = sum(X)/len(X)
     ybar = sum(Y)/len(Y)
@@ -22,6 +39,23 @@ def best_fit(X,Y):
 
 
 def absorptivity(calibration_curve_csv):
+    '''
+    Calculate the slope and intercept of the UV-Vis calibration curve
+    
+    Parameters
+    ----------
+    calibration_curve_csv : str
+        Path to the CSV file containing the calibration curve data.
+        Must contain 'C_uM' (concentration) and 'Abs' (Absorbance).
+        
+    Returns
+    -------
+    m : float
+        Slope of the calibration curve (absorptivity coefficient)
+    b : float
+        Intercept of the calibration curve
+    '''
+    
     df = pd.read_csv(calibration_curve_csv)
     X = df['C_uM']
     Y = df['Abs']
@@ -31,6 +65,26 @@ def absorptivity(calibration_curve_csv):
 
 
 def longform_record(filename, absorptivity, dilution):
+    '''
+    Generate a detailed dataframe of concentration calculations from
+    UV-Vis data.
+    
+    Parameters
+    ----------
+    filename : str
+        Path to the CSV file containing absorbance data.
+    absorptivity : float
+        Slope of the calibration curve.
+    dilution : float
+        Dilution factor applied to the sample aliquots.
+        
+    Returns
+    -------
+    df : pandas.DataFrame
+        DataFrame containing calculated sample concentrations and
+        original (undiluted) concentrations.
+    '''
+    
     df = pd.read_csv(filename)
     df['C_sample'] = df['Abs']/absorptivity
     df['C_original'] = df['C_sample']*dilution
@@ -39,6 +93,25 @@ def longform_record(filename, absorptivity, dilution):
 
 
 def shortform_C(filename, absorptivity, dilution):
+    '''
+    Generate a simplified dataframe of concentration values from
+    blank-subtracted Abs data.
+    
+    Parameters
+    ----------
+    filename : str
+        Path to CSV file containing absorbance data.
+    absorptivity : float
+        Slope of the calibration curve/ absorptivity coefficient.
+    dilution : float
+        Dilution factor applied to the sample aliquots.
+        
+    Returns
+    -------
+    data : pandas.DataFrame
+        DataFrame containing time points and calculated concentrations for each sample.
+    '''
+    
     df = pd.read_csv(filename)
     ds = df.drop(['Time'], axis=1)
     data = pd.DataFrame(data=df['Time'])
@@ -53,25 +126,35 @@ def shortform_C(filename, absorptivity, dilution):
 def data_calculations(shortform_filename, absorptivity, dilution_factor, 
                      total_vol, area, H_cells, index_range):
     '''
-    Performs all calculations for OT2 experimental data
+    Performs all calculations for OT2 experimental data, including diffusivity.
     
     Parameters
     ----------
-    shortform_filename: file name of the .csv for processing. Variable defined earlier.
-    absorptivity = absorption coefficient (obtained from calibration curve)
-    dilution_factor = dilution factor between original H-cells and UV-Vis samples
-    
-    total_vol: total solution volume in each h-cell in cubic microns
-    area: exposed membrane area, in squared microns
-    L_um: membrane thicknesses. Default is 120 microns (defined earlier), but this can 
-        be specified for each membrane.
-    H_cells: dictionary that correlates each H-cell position to its membrane sample
-    index_range: the selection of data points to take the average diffusion coefficient from
+    shortform_filename : str
+        Path to CSV file containing the shortform concentration data.
+    absorptivity : float
+        Absorption coefficient (obtained from calibration curve).
+    dilution_factor : float
+        Dilution factor between original H-cells and UV-Vis samples.
+    total_vol : float
+        Total solution volume in each H-cell (µm³).
+    area : float
+        Exposed membrane area (µm²).
+    H_cells : dict
+        Dictionary mapping H-cell IDs to membrane properties.
+        Must contain:
+            - 'membrane_L' : float, membrane thickness in µm
+            - 'sample' : str, label for the membrane sample
+    index_range : list or slice
+        Range of indices to use for averaging diffusion coefficients
     
     Returns
-    ----------
-    df: df with all original and calculated values
-    D_aves: df with final D values and errors for each membrane sample
+    -------
+    df : pandas.DataFrame
+        Full DataFrame containing original and calculated values
+    D_aves : pandas.DataFrame
+        DataFrame of averaged diffusion coefficients and standard deviations,
+        based on the values selected in the index_range.
     '''
     shortform = shortform_C(shortform_filename, absorptivity, dilution_factor)
     df = pd.DataFrame(data=shortform)
@@ -112,16 +195,28 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
 
 def progress_plots_4(full_df, sample_names, max_time, max_D, color_set, font=18):
     '''
-    Makes scatter plots of Concentration vs Time (left) and Diffusivity (right)
+    Generate side-by-side scatter plots for concentration and diffusivity
+    for four H-cell membrane samples.
     
     Parameters
     ----------
-    full_df: the df containing concentrations and permeability calculations
-    plot_labels: [] containing labels for each membrane sample
-    max_time: upper limit for x range
-    max_D: upper limit for diffusivity range
-    color_set: colors to be used for each sample.
+    full_df : pandas.DataFrame
+        DataFrame containing concentrations and calculated diffusivities.
+    sample_names : dict
+        Mapping of H-cell IDs to sample labels.
+    max_time : float
+        Maximum time in hours for the x-axis.
+    max_D : float
+        Maximum diffusivity value for the y-axis.
+    color_set : list
+        List of marker colors for each sample.
+    font : int, optional
+        Font size for labels and legends (default=18).
     
+    Returns
+    -------
+    None
+        Displays the plots.
     '''
     
     df = full_df
@@ -182,16 +277,28 @@ def progress_plots_4(full_df, sample_names, max_time, max_D, color_set, font=18)
 
 def progress_plots_8(full_df, plot_labels, sample_names, max_time, max_D, font=18):
     '''
-    Makes scatter plots of Concentration vs Time (left) and Diffusivity (right)
+    Generate side-by-side scatter plots for concentration and diffusivity
+    for eight H-cell membrane samples.
     
     Parameters
     ----------
-    full_df: the df containing concentrations and permeability calculations
-    plot_labels: [] containing labels for each membrane sample
-    max_time: upper limit for x range
-    max_D: upper limit for diffusivity range
-    color_set: colors to be used for each sample.
+    full_df : pandas.DataFrame
+        DataFrame containing concentrations and calculated diffusivities.
+    sample_names : dict
+        Mapping of H-cell IDs to sample labels.
+    max_time : float
+        Maximum time in hours for the x-axis.
+    max_D : float
+        Maximum diffusivity value for the y-axis.
+    color_set : list
+        List of marker colors for each sample.
+    font : int, optional
+        Font size for labels and legends (default=18).
     
+    Returns
+    -------
+    None
+        Displays the plots.
     '''
     
     df = full_df
