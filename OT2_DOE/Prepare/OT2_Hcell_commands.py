@@ -381,29 +381,7 @@ def H_cell_protocol(protocol, loaded_labware_dict,
         tiprack = large_tiprack
         pipette = large_pipette
 
-        # Inject dye during first iteration only
-        if i == 0 and dye_volume and dye_well_num:
-            dye_well = loaded_labware_dict['Stock Wells'][dye_well_num]
 
-            for key in h_cell_info:
-                if key.endswith('_1'):
-                    pipette.transfer(dye_volume,
-                                     dye_well.bottom(10),
-                                     h_cell_info[key].top(-2),
-                                     new_tip = 'always',
-                                     blow_out = True,
-                                     blowout_location = 'destination well')
-                    dye_message = f"Injected {dye_volume}µL dye into {key}"
-                    log_file = open(log_filename + '.txt', 'a')
-                    log_file.write(dye_message)
-                    log_file.write('\n')
-                    log_file.close()
-                    print(dye_message)
-                else:
-                    pass
-            print("Dye injection complete.")
-        else:
-            pass        
 
         # Perform aliquot sampling for each H-cell
         
@@ -428,14 +406,47 @@ def H_cell_protocol(protocol, loaded_labware_dict,
                                blowout_location='destination well')
         large_pipette.return_tip()
         
-        # collect aliquot sample from H-cell chamber
-        pipette = small_pipette
-        tiprack = small_tiprack
-        
-        if pipette == large_pipette and pipette.has_tip is True:
-            pipette.return_tip()
+        water_message = 'Water distribution completed.'
+        log_file = open(log_filename + '.txt', 'a')
+        log_file.write(water_message)
+        log_file.write('\n')
+        log_file.close()
+        print(water_message)
             
         for m, n in enumerate(h_cell_col):
+            
+            # Inject dye during first iteration only
+            if i == 0 and dye_volume and dye_well_num:
+                dye_well = loaded_labware_dict['Stock Wells'][dye_well_num]
+
+                if n.endswith('_1'):
+                    tiprack = large_tiprack
+                    pipette = large_pipette
+
+                    pipette.transfer(dye_volume,
+                                     dye_well.bottom(10),
+                                     h_cell_info[n].top(-2),
+                                     new_tip = 'always',
+                                     blow_out = True,
+                                     blowout_location = 'destination well')
+                    dye_message = f"Injected {dye_volume}µL dye into {n}"
+                    log_file = open(log_filename + '.txt', 'a')
+                    log_file.write(dye_message)
+                    log_file.write('\n')
+                    log_file.close()
+                    print(dye_message)
+                else:
+                    pass
+            else:
+                pass                    
+            
+            # collect aliquot sample from H-cell chamber
+            pipette = small_pipette
+            tiprack = small_tiprack
+            
+            if pipette == large_pipette and pipette.has_tip is True:
+                pipette.return_tip()
+            
             pipette.transfer(aliquot_volume,
                              h_cell_info[n].top(-60),
                              sample_wells[n].top(-7),

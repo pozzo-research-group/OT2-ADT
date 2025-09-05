@@ -1,10 +1,6 @@
 # OT2-ADT
 A fork of the original OT2-DOE repo, which contains a group of python modules and notebooks made for high throughput measurement and analysis of samples made through a liquid handling robot (Opentrons or OT2). The ADT version includes specific modules, notebooks, and designs to implement an automated diffusion testing (ADT) setup on an OT2 platform.
 
-    Note: As of 02/01/22 this repo is still being developed with new functions, bugs and documentation updated constantly. 
-    Feel free to address issues in the issues tab or edit them yourself so long as you document and justify the change. 
-    Currently the framework is still not entirely up and running as testing allows for adaptation for the groups use. 
-
 This workflow has been designed to facilitate the testing and characterization of separations-based membranes using dual-compartment H-cells. 
 
 ![Depiction of using the ADT workflow to assist in membrane diffusion testing.](/assets/automated_diffusion_testing.png)
@@ -17,18 +13,18 @@ Automatic handling robots (ALH) are one of many high throughput tools that allow
 ## To get started
 You can install this package using the GitHub repository in following steps: 
 * In your terminal, run git clone https://github.com/pozzo-research-group/OT2-ADT.git
-* Change the directory to `OT2_DOE` root directory, by running `cd OT2_DOE`
+* Change the directory to `OT2_ADT` root directory, by running `cd OT2_ADT`
 * (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following lines:
 
 	`conda env create --file environment.yml`
 	
-	`conda activate OT2_DOE`
+	`conda activate OT2_ADT`
 * Install the package by running `python setup.py install` in your terminal
 
 ## Directory Organization
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
-- `OT2-DOE/`: directory with all files and modules
-  - `ADT Data Analysis/`: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the noteobook is also available.
+- `OT2-ADT/`: directory with all files and modules
+  - `ADT Data Analysis/`: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the notebook is also available.
   - `Custom Labware/`: directory with customized hardware created for use with the OT2. The following .json files are the labware definitions created using the Opentrons custom labware tool. Each hcell file is unique to a specific dual H-cell assembly, as the custom builds and glassware all have slightly different measurements.
     - `20mlscintillationeven_12_wellplate_18000ul.json`
     - `adt_hcell_1_2.json` (for the 22 mL total volume H-cells)
@@ -51,7 +47,7 @@ This repo contains all OT2-DOE content from the original pozzo-research-group/OT
 ### Important!
 
 - The OT2 layout protocols (`H_cell_protocol_4hcell.csv`, `H_cell_protocol_8hcell.csv`) do not contain the robot-specific calibration offsets. These must be added before implementing the workflow.
-- the custom labware definitions for the H-cells (e.g., `adt_hcell_1_2.json`) ARE NOT equivalent to the wellplate designs in `Labware Designs/`. The opentrons defintion consists of the **entire dual H-cell assembly**. The labware definition simplifies the 4-component assembly into one very tall wellplate with round, flat-bottom wells. Therefore, all well spacing and depth measurements must be taken from this full assembly.
+- the custom labware definitions for the H-cells (e.g., `adt_hcell_1_2.json`) ARE NOT equivalent to the wellplate designs in `Labware Designs/`. The opentrons labware defintion consists of the **entire dual H-cell assembly**. The labware definition simplifies the 4-component assembly into one very tall wellplate with round, flat-bottom wells. Therefore, all well spacing and depth measurements must be taken from this full assembly.
 
 ![Figure depiction of a "dual H-cell assembly", which will be defined as a well plate in the Opentrons custom labware library.](/assets/dual_hcell_assembly.png)
 
@@ -99,7 +95,7 @@ The `ADT_Hcell_Testing.ipynb` notebook explains each step of the execution. Ther
   
 ### Implementing the protocol
 
-One the full OT2 layout is assembled and all parameters are determined in the testing notebook, run all of the cells in the notebook. The robot will begin immediately with iteration 0. It will distribute the dilution water to each sample well, then switch pipettes to extract each aliquot, distribute to the assigned sample well, and mix the diluted aliquot. After all aliquots have been collected, the robot will switch pipette tips again and distribute the equivalent volume in water to the aliquot volume, to each H-cell chamber.
+Once the full OT2 layout is assembled and all parameters are defined in the testing notebook, run all of the cells in the notebook. The robot will begin immediately with iteration 0. It will distribute the dilution water to each sample well, then switch pipettes to extract each aliquot, distribute to the assigned sample well, and mix the diluted aliquot. After all aliquots have been collected, the robot will switch pipette tips again and distribute the equivalent volume in water to the aliquot volume, to each H-cell chamber.
 
 Upon completion of the iteration, the robot will calculate the amount of time remaining until the next round of sampling, based on the pre-defined sample frequency. During these "down times," the sample well plates can be removed from the plaform for UV-Vis characterization, then returned to the platform.
 
