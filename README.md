@@ -79,6 +79,8 @@ Once the dual H-cell assembly is created, a custom labware definition must be cr
 
 ### Before starting the workflow
 
+You will need to launch jupyter notebook through the Opentrons software. To do this with the Opentrons app, select the robot in the "Devices" section and navigate to the "Robot Settings" in the drop down menu (top right). Under the "Advanced" section, select the option to "Launch Jupyter Notebook." This will open Jupyter Notebook in a web browser. All files and scripts needed to run the workflow must be located here. From here, open the `ADT_Hcell_Testing.ipynb` notebook.
+
 Membranes should be assembled in the H-cells. H-cells should be placed in the H-cell holders and outfitted with stir bars, then placed on top of the dual stir plates. The water/solutions should be added immediately before initiating the protocol. If utilizing the dye injection step in the automated protocol, then make sure to account for the added volume in each donor cell when that step is executed. 
 
 - e.g. for a 22 mL H-cell in which 80 uL of the stock dye will be used:
@@ -90,7 +92,7 @@ The `ADT_Hcell_Testing.ipynb` notebook explains each step of the execution. Ther
 - `log_metadata`: a dictionary containing experiment-specific metadata, useful for record keeping purposes. The information provided here will be saved to the output log file created during the experiment.
 - `aliquot_volume`: volume to be extracted from each H-cell chamber (in uL)
 - `sample_dilution_volume`: volume of water to be distributed to each sample well in the given iteration, to which the sample aliquot will be mixed and diluted with. Aliquot volume + sample dilution volume must be less than the max volume of the sample well (here, 300 uL).
-- `time_schedule, delay_time`: need inputs for total experimental time (hrs), how long each sampling freuquency will last (hrs), and which sampling frequencies to use (hrs). The total number of samples collected (total time / sampling frequency) cannot exceed available spots in the well plate. If using only 4 H-cells, up to 24 samples can be collected from each H-cell chamber. If using more than 4 H-cells (up to 8), there is a maximum of 12 samples per chamber.
+- `time_schedule, delay_time`: need inputs for total experimental time (hrs), how long each sampling frequency will last (hrs), and which sampling frequencies to use (hrs). The total number of samples collected (total time / sampling frequency) cannot exceed available spots in the well plate. If using only 4 H-cells, up to 24 samples can be collected from each H-cell chamber. If using more than 4 H-cells (up to 8), there is a maximum of 12 samples per chamber.
 - `HC.H_cell_protocol()`: the only inputs in this function that need to be edited are the `log_filename`, `dye_well_num` (location of the dye stock, if using the dye injection option), and `dye_volume` (amount of dye stock to be distributed to each donor chamber). Defaults for the last two inputs are `None`.
   
 ### Implementing the protocol
