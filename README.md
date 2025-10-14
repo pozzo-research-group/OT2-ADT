@@ -25,6 +25,7 @@ You can install this package using the GitHub repository in following steps:
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
 - `OT2-ADT/`: directory with all files and modules
   - `ADT Data Analysis/`: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the notebook is also available.
+    - `Experimental Data/` : Folder containing zip files of membrane diffusion test results 
   - `Custom Labware/`: directory with customized hardware created for use with the OT2. The following .json files are the labware definitions created using the Opentrons custom labware tool. Each hcell file is unique to a specific dual H-cell assembly, as the custom builds and glassware all have slightly different measurements.
     - `20mlscintillationeven_12_wellplate_18000ul.json`
     - `adt_hcell_1_2.json` (for the 22 mL total volume H-cells)

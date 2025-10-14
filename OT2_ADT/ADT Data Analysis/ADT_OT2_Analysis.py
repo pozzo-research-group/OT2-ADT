@@ -109,7 +109,8 @@ def shortform_C(filename, absorptivity, dilution):
     Returns
     -------
     data : pandas.DataFrame
-        DataFrame containing time points and calculated concentrations for each sample.
+        DataFrame containing time points and calculated concentrations 
+        for each sample.
     '''
     
     df = pd.read_csv(filename)
@@ -124,9 +125,9 @@ def shortform_C(filename, absorptivity, dilution):
 
 
 def data_calculations(shortform_filename, absorptivity, dilution_factor, 
-                     total_vol, area, H_cells, index_range):
+                     total_vol_cc, radius, H_cells, index_range):
     '''
-    Performs all calculations for OT2 experimental data, including diffusivity.
+    Calculates membrane permeability (cm/s) and diffusivity (um^2/s).
     
     Parameters
     ----------
@@ -137,22 +138,22 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
     dilution_factor : float
         Dilution factor between original H-cells and UV-Vis samples.
     total_vol : float
-        Total solution volume in each H-cell (µm³).
-    area : float
-        Exposed membrane area (µm²).
+        Total solution volume in each H-cell (mL).
+    radius : float
+        Exposed membrane radius (cm).
     H_cells : dict
         Dictionary mapping H-cell IDs to membrane properties.
         Must contain:
             - 'membrane_L' : float, membrane thickness in µm
             - 'sample' : str, label for the membrane sample
     index_range : list or slice
-        Range of indices to use for averaging diffusion coefficients
+        Range of indices to use for averaging D and P coefficients
     
     Returns
     -------
     df : pandas.DataFrame
         Full DataFrame containing original and calculated values
-    D_aves : pandas.DataFrame
+    df_aves : pandas.DataFrame
         DataFrame of averaged diffusion coefficients and standard deviations,
         based on the values selected in the index_range.
     '''
@@ -163,6 +164,10 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
     # diffusivities
     #H_cells is the dictionary
     columns = []
+    area_cm = np.pi*(radius/2)**2 #(cm^2)
+    area_um = np.pi*(radius*10000/2)**2 #(um^2)
+    vol_cc = total_vol_cc
+    vol_um = total_vol_cc*10**(12) #(um^3)
     
     for key, value in H_cells.items():
         for column_name, column_data in df.items():
@@ -179,21 +184,28 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
         C1 = H_cells[key]['cell 1']
         C0 = df[C1][0]+df[C2][0]
         L_um = H_cells[key]['membrane_L']
-        sample = H_cells[key]['sample']
-        columns.append(sample)
-        df[sample] = (-1)*(total_vol*L_um/(4*area*df['Time']*3600))*np.log(1-(2*df[C2]/C0))
         
-    df = df.round(decimals = 2)
+        sample_D = H_cells[key]['sample'] + '_D'
+        sample_P = H_cells[key]['sample'] + '_P'
+        
+        columns.append(sample_D)
+        df[sample_D] = (-1)*(vol_um*L_um/(4*area_um*df['Time']*3600))*np.log(1-(2*df[C2]/C0))
+        
+        columns.append(sample_P)
+        df[sample_P] = (-1)*(vol_cc/(4*area_cm*df['Time']*3600))*np.log(1-(2*df[C2]/C0))*(1e5)
+        
+    df = df.round(decimals = 3)
     
     # average diffusivities per individual sample
-    D_aves = pd.DataFrame(columns=columns)
-    D_aves.loc['mean'] = df.iloc[index_range].mean()
-    D_aves.loc['std'] = df.iloc[index_range].std()
-    D_aves = D_aves.round(decimals=1)
-    return(df, D_aves)
+    df_aves = pd.DataFrame(columns=columns)
+    df_aves.loc['mean'] = df.iloc[index_range].mean()
+    df_aves.loc['std'] = df.iloc[index_range].std()
+    df_aves = df_aves.round(decimals=3)
+    return(df, df_aves)
 
 
-def progress_plots_4(full_df, sample_names, max_time, max_D, color_set, font=18):
+def progress_plots_4(full_df, variable, sample_names,
+                     color_set, y_subticks, markers=6, font=11):
     '''
     Generate side-by-side scatter plots for concentration and diffusivity
     for four H-cell membrane samples.
@@ -201,17 +213,20 @@ def progress_plots_4(full_df, sample_names, max_time, max_D, color_set, font=18)
     Parameters
     ----------
     full_df : pandas.DataFrame
-        DataFrame containing concentrations and calculated diffusivities.
+        DataFrame containing concentrations and calculated diffusivity/permeability
+        values.
+    variable : str
+        Either "D" for diffusivity or "P" for permeability.
     sample_names : dict
         Mapping of H-cell IDs to sample labels.
-    max_time : float
-        Maximum time in hours for the x-axis.
-    max_D : float
-        Maximum diffusivity value for the y-axis.
+    y_subticks : float
+        Division of y axis subticks.
     color_set : list
         List of marker colors for each sample.
+    markers : int, optional
+        Size of plot markers (default=6)
     font : int, optional
-        Font size for labels and legends (default=18).
+        Font size for labels and legends (default=11).
     
     Returns
     -------
@@ -221,79 +236,110 @@ def progress_plots_4(full_df, sample_names, max_time, max_D, color_set, font=18)
     
     df = full_df
     
-    D1 = sample_names['H1']['sample']
-    D2 = sample_names['H2']['sample']
-    D3 = sample_names['H3']['sample']
-    D4 = sample_names['H4']['sample']
+    D1 = sample_names['H1']['sample'] + '_' + variable
+    D2 = sample_names['H2']['sample'] + '_' + variable
+    D3 = sample_names['H3']['sample'] + '_' + variable
+    D4 = sample_names['H4']['sample'] + '_' + variable
     
-    fig, (ax1,ax2) = plt.subplots(1,2, figsize=(12,6), layout='constrained')
+    fig, (ax1,ax2) = plt.subplots(1,2, figsize=(8,4), layout='constrained')
     
     donor = mlines.Line2D([], [], color='black', ls='', marker='v',
-                          markersize=8, label='Donor Chamber (Cell 1)')
+                          markersize=markers, label='Donor Chamber')
     receptor = mlines.Line2D([], [], color='black', ls='', marker='s',
-                             markersize=8, label='Receptor Chamber (Cell 2)')
-    diffusivity = mlines.Line2D([], [], color='black', ls='', marker='o',
-                                markersize=8, label='Diffusion Coefficient')
+                             markersize=markers, label='Receptor Chamber')
+    permeability = mlines.Line2D([], [], color='black', ls='', marker='o',
+                                markersize=markers, label='Permeability')
     
     sample_1 = mpatches.Patch(color=color_set[0], label=D1)
     sample_2 = mpatches.Patch(color=color_set[1], label=D2)
     sample_3 = mpatches.Patch(color=color_set[2], label=D3)
     sample_4 = mpatches.Patch(color=color_set[3], label=D4)
 
-    ax1.plot(df['Time'], df['H1_C1'], ms=8, marker='v', color=color_set[0], linewidth=0)
-    ax1.plot(df['Time'], df['H2_C1'], ms=8, marker='v', color=color_set[1], linewidth=0)
-    ax1.plot(df['Time'], df['H3_C1'], ms=8, marker='v', color=color_set[2], linewidth=0)
-    ax1.plot(df['Time'], df['H4_C1'], ms=8, marker='v', color=color_set[3], linewidth=0)
-    ax1.plot(df['Time'], df['H1_C2'], ms=8, marker='s', color=color_set[0], linewidth=0)
-    ax1.plot(df['Time'], df['H2_C2'], ms=8, marker='s', color=color_set[1], linewidth=0)
-    ax1.plot(df['Time'], df['H3_C2'], ms=8, marker='s', color=color_set[2], linewidth=0)
-    ax1.plot(df['Time'], df['H4_C2'], ms=8, marker='s', color=color_set[3], linewidth=0)
+    ax1.plot(df['Time'], df['H1_C1'], ms=markers, marker='v',
+             color=color_set[0], linewidth=0)
+    ax1.plot(df['Time'], df['H2_C1'], ms=markers, marker='v',
+             color=color_set[1], linewidth=0)
+    ax1.plot(df['Time'], df['H3_C1'], ms=markers, marker='v',
+             color=color_set[2], linewidth=0)
+    ax1.plot(df['Time'], df['H4_C1'], ms=markers, marker='v',
+             color=color_set[3], linewidth=0)
+    ax1.plot(df['Time'], df['H1_C2'], ms=markers, marker='s',
+             color=color_set[0], linewidth=0)
+    ax1.plot(df['Time'], df['H2_C2'], ms=markers, marker='s',
+             color=color_set[1], linewidth=0)
+    ax1.plot(df['Time'], df['H3_C2'], ms=markers, marker='s',
+             color=color_set[2], linewidth=0)
+    ax1.plot(df['Time'], df['H4_C2'], ms=markers, marker='s',
+             color=color_set[3], linewidth=0)
+    
+    ax1ymax = df[['H1_C1','H2_C1','H3_C1','H4_C1']].max().max()/0.9
+    
     ax1.set_xlabel('Time (hr)', fontsize=font)
     ax1.set_ylabel(r'Concentration ($\mu M$)', fontsize=font)
-    ax1.set_ylim(0,df['H1_C1'][0]+25)
-    ax1.set_xlim(-2,max_time+5)
+    ax1.set_ylim(0,ax1ymax)
+    ax1.set_xlim(-2,df['Time'].iloc[-1]+5)
     ax1.xaxis.set_minor_locator(MultipleLocator(2))
-    ax1.legend(handles=[donor, receptor], fontsize=font-4, edgecolor='inherit')
-    ax1.tick_params(labelsize=font-2)
+    ax1.legend(handles=[donor, receptor], fontsize=font-1, edgecolor='inherit')
+    ax1.tick_params(labelsize=font)
 
-    ax2.plot(df['Time'][1:], df[D1][1:], ms=8, marker='o', color=color_set[0], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D2][1:], ms=8, marker='o', color=color_set[1], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D3][1:], ms=8, marker='o', color=color_set[2], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D4][1:], ms=8, marker='o', color=color_set[3], linewidth=0)
-    ax2.set_xlabel('Time (hr)', fontsize=font)
-    ax2.set_ylabel('Diffusivity ($\mu m^2/s$)', fontsize=font)
-    ax2.set_ylim(0,max_D)
-    ax2.set_xlim(0,max_time+5)
-    ax2.xaxis.set_minor_locator(MultipleLocator(2))
-    ax2.legend(handles=[diffusivity], fontsize=font-4, edgecolor='inherit')
-    ax2.tick_params(labelsize=font-2)
+    ax2.plot(df['Time'][1:], df[D1][1:], ms=markers, marker='o',
+             color=color_set[0], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D2][1:], ms=markers, marker='o',
+             color=color_set[1], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D3][1:], ms=markers, marker='o',
+             color=color_set[2], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D4][1:], ms=markers, marker='o',
+             color=color_set[3], linewidth=0)
     
-    fig.legend(handles=[sample_1, sample_2, sample_3, sample_4], loc='outside upper center',
-               ncols=4, fontsize=font-2, edgecolor='inherit')
+    ax2.set_xlabel('Time (hr)', fontsize=font)
+    
+    if variable == 'P':
+        yaxisname = 'Permeability (cm/s) (x$10^-5$)'
+    elif variable == 'D':
+        yaxisname = 'Diffusivity ($\mu m^2/s$)'
+    else:
+        yaxisname = 'unknown'
+        
+    ymax = df[[D1,D2,D3,D4]][1:].max().max()/0.75
+            
+    ax2.set_ylabel(yaxisname, fontsize=font)
+    ax2.set_ylim(0,ymax)
+    ax2.set_xlim(0,df['Time'].iloc[-1]+5)
+    ax2.xaxis.set_minor_locator(MultipleLocator(2))
+    ax2.yaxis.set_minor_locator(MultipleLocator(y_subticks))
+    ax2.legend(handles=[permeability], fontsize=font-1, edgecolor='inherit')
+    ax2.tick_params(labelsize=font)
+    
+    fig.legend(handles=[sample_1, sample_2, sample_3, sample_4],
+               loc='outside upper center', ncols=4, fontsize=font, edgecolor='inherit')
 
     return(plt.show())
 
 
 
-def progress_plots_8(full_df, plot_labels, sample_names, max_time, max_D, font=18):
+def progress_plots_8(full_df, variable, sample_names,
+                     y_subticks, markers=6, font=11):
     '''
     Generate side-by-side scatter plots for concentration and diffusivity
-    for eight H-cell membrane samples.
+    for four H-cell membrane samples.
     
     Parameters
     ----------
     full_df : pandas.DataFrame
-        DataFrame containing concentrations and calculated diffusivities.
+        DataFrame containing concentrations and calculated diffusivity/permeability
+        values.
+    variable : str
+        Either "D" for diffusivity or "P" for permeability.
     sample_names : dict
         Mapping of H-cell IDs to sample labels.
-    max_time : float
-        Maximum time in hours for the x-axis.
-    max_D : float
-        Maximum diffusivity value for the y-axis.
+    y_subticks : float
+        Division of y axis subticks.
     color_set : list
         List of marker colors for each sample.
+    markers : int, optional
+        Size of plot markers (default=6)
     font : int, optional
-        Font size for labels and legends (default=18).
+        Font size for labels and legends (default=11).
     
     Returns
     -------
@@ -303,79 +349,264 @@ def progress_plots_8(full_df, plot_labels, sample_names, max_time, max_D, font=1
     
     df = full_df
     
-    D1 = sample_names['H1']['sample']
-    D2 = sample_names['H2']['sample']
-    D3 = sample_names['H3']['sample']
-    D4 = sample_names['H4']['sample']
-    D5 = sample_names['H5']['sample']
-    D6 = sample_names['H6']['sample']
-    D7 = sample_names['H7']['sample']
-    D8 = sample_names['H8']['sample']
+    D1 = sample_names['H1']['sample'] + '_' + variable
+    D2 = sample_names['H2']['sample'] + '_' + variable
+    D3 = sample_names['H3']['sample'] + '_' + variable
+    D4 = sample_names['H4']['sample'] + '_' + variable
+    D5 = sample_names['H5']['sample'] + '_' + variable
+    D6 = sample_names['H6']['sample'] + '_' + variable
+    D7 = sample_names['H7']['sample'] + '_' + variable
+    D8 = sample_names['H8']['sample'] + '_' + variable
     
     color_set = ['#332288','#117733','#44AA99','##88CCEE',
                  '#C5B044','#CC6677','#AA4499','#882255']
     
-    fig, (ax1,ax2) = plt.subplots(1,2, figsize=(12,6), layout='constrained')
+    fig, (ax1,ax2) = plt.subplots(1,2, figsize=(10,5), layout='constrained')
     
     donor = mlines.Line2D([], [], color='black', ls='', marker='v',
-                          markersize=8, label='Donor Chamber (Cell 1)')
+                          markersize=markers, label='Donor Chamber')
     receptor = mlines.Line2D([], [], color='black', ls='', marker='s',
-                             markersize=8, label='Receptor Chamber (Cell 2)')
-    diffusivity = mlines.Line2D([], [], color='black', ls='', marker='o',
-                                markersize=8, label='Diffusion Coefficient')
+                             markersize=markers, label='Receptor Chamber')
+    permeability = mlines.Line2D([], [], color='black', ls='', marker='o',
+                                markersize=markers, label='Permeability')
     
     sample_1 = mpatches.Patch(color=color_set[0], label=D1)
     sample_2 = mpatches.Patch(color=color_set[1], label=D2)
     sample_3 = mpatches.Patch(color=color_set[2], label=D3)
     sample_4 = mpatches.Patch(color=color_set[3], label=D4)
-    sample_5 = mpatches.Patch(color=color_set[4], label=D5)
-    sample_6 = mpatches.Patch(color=color_set[5], label=D6)
-    sample_7 = mpatches.Patch(color=color_set[6], label=D7)
-    sample_8 = mpatches.Patch(color=color_set[7], label=D8)
+    sample_5 = mpatches.Patch(color=color_set[0], label=D5)
+    sample_6 = mpatches.Patch(color=color_set[1], label=D6)
+    sample_7 = mpatches.Patch(color=color_set[2], label=D7)
+    sample_8 = mpatches.Patch(color=color_set[3], label=D8)
 
-    ax1.plot(df['Time'], df['H1_C1'], ms=8, marker='v', color=color_set[0], linewidth=0)
-    ax1.plot(df['Time'], df['H2_C1'], ms=8, marker='v', color=color_set[1], linewidth=0)
-    ax1.plot(df['Time'], df['H3_C1'], ms=8, marker='v', color=color_set[2], linewidth=0)
-    ax1.plot(df['Time'], df['H4_C1'], ms=8, marker='v', color=color_set[3], linewidth=0)
-    ax1.plot(df['Time'], df['H5_C1'], ms=8, marker='v', color=color_set[4], linewidth=0)
-    ax1.plot(df['Time'], df['H6_C1'], ms=8, marker='v', color=color_set[5], linewidth=0)
-    ax1.plot(df['Time'], df['H7_C1'], ms=8, marker='v', color=color_set[6], linewidth=0)
-    ax1.plot(df['Time'], df['H8_C1'], ms=8, marker='v', color=color_set[7], linewidth=0)
-    ax1.plot(df['Time'], df['H1_C2'], ms=8, marker='s', color=color_set[0], linewidth=0)
-    ax1.plot(df['Time'], df['H2_C2'], ms=8, marker='s', color=color_set[1], linewidth=0)
-    ax1.plot(df['Time'], df['H3_C2'], ms=8, marker='s', color=color_set[2], linewidth=0)
-    ax1.plot(df['Time'], df['H4_C2'], ms=8, marker='s', color=color_set[3], linewidth=0)
-    ax1.plot(df['Time'], df['H5_C2'], ms=8, marker='s', color=color_set[4], linewidth=0)
-    ax1.plot(df['Time'], df['H6_C2'], ms=8, marker='s', color=color_set[5], linewidth=0)
-    ax1.plot(df['Time'], df['H7_C2'], ms=8, marker='s', color=color_set[6], linewidth=0)
-    ax1.plot(df['Time'], df['H8_C2'], ms=8, marker='s', color=color_set[7], linewidth=0)
+    ax1.plot(df['Time'], df['H1_C1'], ms=markers, marker='v',
+             color=color_set[0], linewidth=0)
+    ax1.plot(df['Time'], df['H2_C1'], ms=markers, marker='v',
+             color=color_set[1], linewidth=0)
+    ax1.plot(df['Time'], df['H3_C1'], ms=markers, marker='v',
+             color=color_set[2], linewidth=0)
+    ax1.plot(df['Time'], df['H4_C1'], ms=markers, marker='v',
+             color=color_set[3], linewidth=0)
+    ax1.plot(df['Time'], df['H5_C1'], ms=markers, marker='v',
+             color=color_set[4], linewidth=0)
+    ax1.plot(df['Time'], df['H6_C1'], ms=markers, marker='v',
+             color=color_set[5], linewidth=0)
+    ax1.plot(df['Time'], df['H7_C1'], ms=markers, marker='v',
+             color=color_set[6], linewidth=0)
+    ax1.plot(df['Time'], df['H8_C1'], ms=markers, marker='v',
+             color=color_set[7], linewidth=0)
+    ax1.plot(df['Time'], df['H1_C2'], ms=markers, marker='s',
+             color=color_set[0], linewidth=0)
+    ax1.plot(df['Time'], df['H2_C2'], ms=markers, marker='s',
+             color=color_set[1], linewidth=0)
+    ax1.plot(df['Time'], df['H3_C2'], ms=markers, marker='s',
+             color=color_set[2], linewidth=0)
+    ax1.plot(df['Time'], df['H4_C2'], ms=markers, marker='s',
+             color=color_set[3], linewidth=0)
+    ax1.plot(df['Time'], df['H5_C2'], ms=markers, marker='s',
+             color=color_set[4], linewidth=0)
+    ax1.plot(df['Time'], df['H6_C2'], ms=markers, marker='s',
+             color=color_set[5], linewidth=0)
+    ax1.plot(df['Time'], df['H7_C2'], ms=markers, marker='s',
+             color=color_set[6], linewidth=0)
+    ax1.plot(df['Time'], df['H8_C2'], ms=markers, marker='s',
+             color=color_set[7], linewidth=0)
+    
+    
     ax1.set_xlabel('Time (hr)', fontsize=font)
     ax1.set_ylabel(r'Concentration ($\mu M$)', fontsize=font)
-    ax1.set_ylim(0,df['H1_C1'][0]+25)
-    ax1.set_xlim(-2,max_time+5)
+    ax1.set_ylim(0,df['H4_C1'][0]+25)
+    ax1.set_xlim(-2,df['Time'].iloc[-1]+5)
     ax1.xaxis.set_minor_locator(MultipleLocator(2))
-    ax1.legend(handles=[donor, receptor], fontsize=font-4, edgecolor='inherit')
-    ax1.tick_params(labelsize=font-2)
+    ax1.legend(handles=[donor, receptor], fontsize=font-1, edgecolor='inherit')
+    ax1.tick_params(labelsize=font)
 
-    ax2.plot(df['Time'][1:], df[D1][1:], ms=8, marker='o', color=color_set[0], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D2][1:], ms=8, marker='o', color=color_set[1], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D3][1:], ms=8, marker='o', color=color_set[2], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D4][1:], ms=8, marker='o', color=color_set[3], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D5][1:], ms=8, marker='o', color=color_set[4], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D6][1:], ms=8, marker='o', color=color_set[5], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D7][1:], ms=8, marker='o', color=color_set[6], linewidth=0)
-    ax2.plot(df['Time'][1:], df[D8][1:], ms=8, marker='o', color=color_set[7], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D1][1:], ms=markers, marker='o',
+             color=color_set[0], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D2][1:], ms=markers, marker='o',
+             color=color_set[1], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D3][1:], ms=markers, marker='o',
+             color=color_set[2], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D4][1:], ms=markers, marker='o',
+             color=color_set[3], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D5][1:], ms=markers, marker='o',
+             color=color_set[4], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D6][1:], ms=markers, marker='o',
+             color=color_set[5], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D7][1:], ms=markers, marker='o',
+             color=color_set[6], linewidth=0)
+    ax2.plot(df['Time'][1:], df[D8][1:], ms=markers, marker='o',
+             color=color_set[7], linewidth=0)
     ax2.set_xlabel('Time (hr)', fontsize=font)
-    ax2.set_ylabel('Diffusivity ($\mu m^2/s$)', fontsize=font)
-    ax2.set_ylim(0,max_D)
-    ax2.set_xlim(0,max_time+5)
-    ax2.xaxis.set_minor_locator(MultipleLocator(2))
-    ax2.legend(handles=[diffusivity], fontsize=font-4, edgecolor='inherit')
-    ax2.tick_params(labelsize=font-2)
     
-    fig.legend(handles=[sample_1, sample_2, sample_3, sample_4,sample_5,sample_6,sample_7,sample_8],
-               loc='outside upper center', ncols=4, fontsize=font-2, edgecolor='inherit')
+    
+    ax2.set_xlabel('Time (hr)', fontsize=font)
+    
+    if variable == 'P':
+        yaxisname = 'Permeability (cm/s) (x$10^-5$)'
+    elif variable == 'D':
+        yaxisname = 'Diffusivity ($\mu m^2/s$)'
+    else:
+        yaxisname = 'unknown'
+    
+    ymax = df[[D1,D2,D3,D4,D5,D6,D7,D8]][1:].max().max()/0.75
+            
+    ax2.set_ylabel(yaxisname, fontsize=font)
+    ax2.set_ylim(0,ymax)
+    ax2.set_xlim(0,df['Time'].iloc[-1]+5)
+    ax2.xaxis.set_minor_locator(MultipleLocator(2))
+    ax2.yaxis.set_minor_locator(MultipleLocator(y_subticks))
+    ax2.legend(handles=[permeability], fontsize=font-1, edgecolor='inherit')
+    ax2.tick_params(labelsize=font)
+    
+    fig.legend(handles=[sample_1, sample_2, sample_3, sample_4,
+                        sample_5, sample_6, sample_7, sample_8],
+               loc='outside upper center', ncols=4, 
+               fontsize=font, edgecolor='inherit')
 
     return(plt.show())
 
 
+def data_averages_4(df, H_cells, variable,
+                    H1_index = [],
+                    H2_index = [],
+                    H3_index = [],
+                    H4_index = []):
+    '''
+    Calculates average diffusivity or permeabilty for each sample using the
+    assigned index ranges for each sample.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing concentrations and calculated 
+        diffusivity/permeability values.
+    sample_names : dict
+        Mapping of H-cell IDs to sample labels.
+    variable : str
+        Either "D" for diffusivity or "P" for permeability.
+    H1_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H1.
+    H2_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H2.
+    H3_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H3.
+    H4_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H4.
+    
+    Returns
+    -------
+    None
+        Prints each calculated permeability/diffisivity per sample.
+    '''
+    
+    H1 = H_cells['H1']['sample'] + '_' + variable
+    H2 = H_cells['H2']['sample'] + '_' + variable
+    H3 = H_cells['H3']['sample'] + '_' + variable
+    H4 = H_cells['H4']['sample'] + '_' + variable
+    
+    H1_ave = df[H1][H1_index].mean()
+    H2_ave = df[H2][H2_index].mean()
+    H3_ave = df[H3][H3_index].mean()
+    H4_ave = df[H4][H4_index].mean()
+    
+    H1_std = df[H1][H1_index].std()
+    H2_std = df[H2][H2_index].std()
+    H3_std = df[H3][H3_index].std()
+    H4_std = df[H4][H4_index].std()
+    
+    print(str(H1), ' = ', H1_ave.round(3), '+/-', H1_std.round(3))
+    print(str(H2), ' = ', H2_ave.round(3), '+/-', H2_std.round(3))
+    print(str(H3), ' = ', H3_ave.round(3), '+/-', H3_std.round(3))
+    print(str(H4), ' = ', H4_ave.round(3), '+/-', H4_std.round(3))
+    return
+
+def data_averages_8(df, H_cells, variable,
+                    H1_index = [],
+                    H2_index = [],
+                    H3_index = [],
+                    H4_index = []):
+    '''
+    Calculates average diffusivity or permeabilty for each sample using the
+    assigned index ranges for each sample.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing concentrations and calculated 
+        diffusivity/permeability values.
+    sample_names : dict
+        Mapping of H-cell IDs to sample labels.
+    variable : str
+        Either "D" for diffusivity or "P" for permeability.
+    H1_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H1.
+    H2_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H2.
+    H3_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H3.
+    H4_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H4.
+    H5_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H5.
+    H6_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H6.
+    H7_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H7.
+    H8_index = list or slice
+        Range of indices to use for calculating D/P coefficients and 
+        standard deviations for the membrane sample in position H8.
+    
+    Returns
+    -------
+    None
+        Prints each calculated permeability/diffisivity per sample.
+    '''
+    
+    H1 = H_cells['H1']['sample'] + '_' + variable
+    H2 = H_cells['H2']['sample'] + '_' + variable
+    H3 = H_cells['H3']['sample'] + '_' + variable
+    H4 = H_cells['H4']['sample'] + '_' + variable
+    H5 = H_cells['H5']['sample'] + '_' + variable
+    H6 = H_cells['H6']['sample'] + '_' + variable
+    H7 = H_cells['H7']['sample'] + '_' + variable
+    H8 = H_cells['H8']['sample'] + '_' + variable
+    
+    H1_ave = df[H1][H1_index].mean()
+    H2_ave = df[H2][H2_index].mean()
+    H3_ave = df[H3][H3_index].mean()
+    H4_ave = df[H4][H4_index].mean()
+    H5_ave = df[H5][H5_index].mean()
+    H6_ave = df[H6][H6_index].mean()
+    H7_ave = df[H7][H7_index].mean()
+    H8_ave = df[H8][H8_index].mean()
+    
+    H1_std = df[H1][H1_index].std()
+    H2_std = df[H2][H2_index].std()
+    H3_std = df[H3][H3_index].std()
+    H4_std = df[H4][H4_index].std()
+    H5_std = df[H5][H5_index].std()
+    H6_std = df[H6][H6_index].std()
+    H7_std = df[H7][H7_index].std()
+    H8_std = df[H8][H8_index].std()
+    
+    print(str(H1), ' = ', H1_ave.round(3), '+/-', H1_std.round(3))
+    print(str(H2), ' = ', H2_ave.round(3), '+/-', H2_std.round(3))
+    print(str(H3), ' = ', H3_ave.round(3), '+/-', H3_std.round(3))
+    print(str(H4), ' = ', H4_ave.round(3), '+/-', H4_std.round(3))
+    print(str(H5), ' = ', H5_ave.round(3), '+/-', H5_std.round(3))
+    print(str(H6), ' = ', H6_ave.round(3), '+/-', H6_std.round(3))
+    print(str(H7), ' = ', H7_ave.round(3), '+/-', H7_std.round(3))
+    print(str(H8), ' = ', H8_ave.round(3), '+/-', H8_std.round(3))
+    return
