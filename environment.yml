@@ -1,4 +1,4 @@
-name: OT2_DOE
+name: OT2_ADT
 channels:
   - conda-forge
   - defaults
