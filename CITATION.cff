@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Benstead"
+  given-names: "Claire"
+  orcid: "https://orcid.org/0000-0003-3872-9369"
+- family-names: "Politi"
+  given-names: "Maria"
+  orcid: "https://orcid.org/0000-0002-5815-3371"
+title: "OT2-ADT"
+version: 1.0.0
+doi: /zenodo
+date-released: 2025-10-30
+url: "https://github.com/pozzo-research-group/OT2-ADT"
