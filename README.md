@@ -44,6 +44,7 @@ This repo contains all OT2-DOE content from the original pozzo-research-group/OT
   - `H_cell_protocol_4hcell.csv`
   - `H_cell_protocol_8hcell.csv`
   - `ADT_8_Hcell_offset_calibration_test.py`
+  - `ADT_4_Hcell_offset_calibration_test.py`
   - `ADT_Hcell_Testing.ipynb`
 
 ### Important!
@@ -83,16 +84,16 @@ Once the dual H-cell assembly is created, a custom labware definition must be cr
 
 Calibration of the OT2 platform can be completed within the Opentrons app. To establish offsets for the custom labware and general layout for the difusion testing protocol, do the following:
 
-    1. Assemble the labware in the OT2, with each component in the position it belongs for the actual diffusion testing protocol. 
-    2. In the Opentrons app, navigate to "Protocols" and upload the `ADT_8_Hcell_offset_calibration_test.py`. This script is a very short script that will load the labware in the layout matching the actual protocol, which will then allow you to use the Opentrons GUI to assign offsets. 
-    3. Make sure that the items in "Labware" and "Hardware" within the uploaded protocol are correct, then select "Start Setup." The GUI will walk you through assigning offsets for each piece of labware. 
-    4. Once you've assigned offsets (within this protocol), run the protocol. The OT2 will pick up a P20 tip and return it, then pick up and return a P300 tip. This completes the protocol.
-    5. Take the offsets [z,y,z] you've assigned to each piece of labware and add them to the `H_cell_protocol_8hcell.csv` in the appropriate locations, i.e.,
-      - `OT2 Destination Labware Offset, "[[x,y,z],[x,y,z][x,y,z]]"`
-      - `OT2 Stock Labware Offset,"[[x,y,z]]"`
-      - OT2 Left Tiprack Offset,"[[x,y,z]]"
-      - OT2 Right Tiprack Offset,"[[x,y,z]]"
-    6. Save the file.
+- Assemble the labware in the OT2, with each component in the position it belongs for the actual diffusion testing protocol. 
+- In the Opentrons app, navigate to "Protocols" and upload the `ADT_8_Hcell_offset_calibration_test.py`. This script is a very short script that will load the labware in the layout matching the actual protocol, which will then allow you to use the Opentrons GUI to assign offsets. 
+- Make sure that the items in "Labware" and "Hardware" within the uploaded protocol are correct, then select "Start Setup." The GUI will walk you through assigning offsets for each piece of labware. 
+- Once you've assigned offsets (within this protocol), run the protocol. The OT2 will pick up a P20 tip and return it, then pick up and return a P300 tip. This completes the protocol.
+- Take the offsets [z,y,z] you've assigned to each piece of labware and add them to the `H_cell_protocol_8hcell.csv` in the appropriate locations, i.e.,
+  - `OT2 Destination Labware Offset, "[[x,y,z],[x,y,z][x,y,z]]"`
+  - `OT2 Stock Labware Offset,"[[x,y,z]]"`
+  - `OT2 Left Tiprack Offset,"[[x,y,z]]"`
+  - `OT2 Right Tiprack Offset,"[[x,y,z]]"`
+- Save the file.
     
 The same process applies for the 4-Hcell setup.
 
