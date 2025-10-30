@@ -43,6 +43,7 @@ This repo contains all OT2-DOE content from the original pozzo-research-group/OT
   - `Chemical Database.csv`
   - `H_cell_protocol_4hcell.csv`
   - `H_cell_protocol_8hcell.csv`
+  - `ADT_8_Hcell_offset_calibration_test.py`
   - `ADT_Hcell_Testing.ipynb`
 
 ### Important!
@@ -76,11 +77,30 @@ Dual stir plate construction:
 
 The dual stir plates were constructed by 3D printing the Dual_Stir_Plate_base and Dual_Stir_Plate_lid, then outfitting each unit with the components of two commerically available stir plates. The base and lid of the unit were designed as separate pieces so that the motors are connected to the lid and can separated from the base. The support columns on the lid were designed specifically for the stir plate design from [INTLLAB](https://www.amazon.com/Magnetic-stirrer-magnetic-Stirring-Capacity/dp/B072K24X5P). If using different hardware, the lid can be edited using the .step file. Images of the interiors of the stir plates can be found in the `assets/` folder.
 
-Once the dual H-cell assembly is created, a custom labware definition must be created for each unique assembly and added to the opentrons library. You can either create a new file using the labware definition creator tool from Opentrons, or edit the existing files in `Custom Labware/`. Calibration and offsets must also be completed.
+Once the dual H-cell assembly is created, a custom labware definition must be created for each unique assembly and added to the opentrons library. You can either create a new file using the labware definition creator tool from Opentrons, or edit the existing files in `Custom Labware/`. 
+
+**Calibration and offsets must also be completed.**
+
+Calibration of the OT2 platform can be completed within the Opentrons app. To establish offsets for the custom labware and general layout for the difusion testing protocol, do the following:
+
+    1. Assemble the labware in the OT2, with each component in the position it belongs for the actual diffusion testing protocol. 
+    2. In the Opentrons app, navigate to "Protocols" and upload the `ADT_8_Hcell_offset_calibration_test.py`. This script is a very short script that will load the labware in the layout matching the actual protocol, which will then allow you to use the Opentrons GUI to assign offsets. 
+    3. Make sure that the items in "Labware" and "Hardware" within the uploaded protocol are correct, then select "Start Setup." The GUI will walk you through assigning offsets for each piece of labware. 
+    4. Once you've assigned offsets (within this protocol), run the protocol. The OT2 will pick up a P20 tip and return it, then pick up and return a P300 tip. This completes the protocol.
+    5. Take the offsets [z,y,z] you've assigned to each piece of labware and add them to the `H_cell_protocol_8hcell.csv` in the appropriate locations, i.e.,
+      - `OT2 Destination Labware Offset, "[[x,y,z],[x,y,z][x,y,z]]"`
+      - `OT2 Stock Labware Offset,"[[x,y,z]]"`
+      - OT2 Left Tiprack Offset,"[[x,y,z]]"
+      - OT2 Right Tiprack Offset,"[[x,y,z]]"
+    6. Save the file.
+    
+The same process applies for the 4-Hcell setup.
 
 ### Before starting the workflow
 
 You will need to launch jupyter notebook through the Opentrons software. To do this with the Opentrons app, select the robot in the "Devices" section and navigate to the "Robot Settings" in the drop down menu (top right). Under the "Advanced" section, select the option to "Launch Jupyter Notebook." This will open Jupyter Notebook in a web browser. All files and scripts needed to run the workflow must be located here. From here, open the `ADT_Hcell_Testing.ipynb` notebook.
+
+**Note:** the OT2 will launch jupyter notebook from its own IP. You may need to upload the local `OT2-ADT` directory first.
 
 Membranes should be assembled in the H-cells. H-cells should be placed in the H-cell holders and outfitted with stir bars, then placed on top of the dual stir plates. The water/solutions should be added immediately before initiating the protocol. If utilizing the dye injection step in the automated protocol, then make sure to account for the added volume in each donor cell when that step is executed. 
 

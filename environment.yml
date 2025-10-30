@@ -1,7 +1,6 @@
 name: OT2_ADT
 channels:
   - conda-forge
-  - defaults
 dependencies:
   - h5py
   - imageio
@@ -13,7 +12,6 @@ dependencies:
   - nose
   - notebook
   - numpy
-  - numpy-base
   - opentrons
   - pandas
   - python
