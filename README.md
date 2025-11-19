@@ -1,18 +1,17 @@
 # OT2-ADT
-A fork of the original OT2-DOE repo, which contains a group of python modules and notebooks made for high throughput measurement and analysis of samples made through a liquid handling robot (Opentrons or OT2). The ADT version includes specific modules, notebooks, and designs to implement an automated diffusion testing (ADT) setup on an OT2 platform.
+A fork of the original [OT2-DOE](https://github.com/pozzo-research-group/OT2-DOE) repo, which contains a group of python modules and notebooks made for high throughput measurement and analysis of samples made through a liquid handling robot (Opentrons or OT2). The ADT version includes specific modules, notebooks, and designs to implement an automated diffusion testing (ADT) setup on an OT2 platform.
 
-This workflow has been designed to facilitate the testing and characterization of separations-based membranes using dual-compartment H-cells. 
+The workflow in this repo has been designed to facilitate the testing and characterization of separations-based membranes using dual-compartment H-cells. 
 
 ![Depiction of using the ADT workflow to assist in membrane diffusion testing.](/assets/automated_diffusion_testing.png)
 
 
 ## Introduction
-Automatic handling robots (ALH) are one of many high throughput tools that allow for increases discovery of solution-based chemistry. They can also allow for the automation of repetitive tasks, such as sample collection of multi-hour permeation testing. We have developed a workflow that allows for up to 8 H-cell membrane tests to be conducted in parallel. The robot (an OT2) extracts aliquots from each H-cell chamber at pre-designated frequencies and prepares them in a 96-well sample plate for UV-Vis characterization. The robot then replenishes the lost aliquot volume in each H-cell with restock solution (in this case, water).
-
+Automatic liquid handling robots (ALH) are one of many high throughput tools that allow for increases discovery of solution-based chemistry. They can also allow for the automation of repetitive tasks, such as sample collection of multi-hour permeation testing. We have developed a workflow that allows for up to 8 H-cell membrane diffusion tests to be conducted in parallel. The robot (an OT2) extracts aliquots from each H-cell chamber at pre-designated frequencies and prepares them in a 96-well sample plate for UV-Vis characterization. The robot then replenishes the lost aliquot volume in each H-cell with restock solution (in this case, water).
 
 ## To get started
 You can install this package using the GitHub repository in following steps: 
-* In your terminal, run git clone https://github.com/pozzo-research-group/OT2-ADT.git
+* In your terminal, run `git clone https://github.com/pozzo-research-group/OT2-ADT.git`
 * Change the directory to `OT2_ADT` root directory, by running `cd OT2_ADT`
 * (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following lines:
 
@@ -123,4 +122,10 @@ Once the full OT2 layout is assembled and all parameters are defined in the test
 
 Upon completion of the iteration, the robot will calculate the amount of time remaining until the next round of sampling, based on the pre-defined sample frequency. During these "down times," the sample well plates can be removed from the plaform for UV-Vis characterization, then returned to the platform.
 
-The `ADT Testing Analysis/` folder has been provided as an optional guidance for processing and analyzing the data collected from this workflow. 
+The `ADT Testing Analysis/` folder has been provided as an optional guidance for processing and analyzing the data collected from this workflow. If using this approach, all analysis can be completed in the `OT2_ADT` environment. To add a kernel to jupyter notebook:
+
+- `conda install jupyter ipykernel`
+- `python -m ipykernel --user --name=OT2_ADT --display-name "OT2_ADT"`
+
+The kernel can be accessed by launching jupyter notebook / lab within the environment, or from the base env.
+
