@@ -48,7 +48,7 @@ def get_Hcell_labware(loaded_dict):
     h_cell_wells = []
     wellplates = []
     for row in dest_lab:
-        if 'hcell' in str(row):
+        if 'Hcell' in str(row):
             h_cell_wells.append(row)
         else:
             wellplates.append(row)

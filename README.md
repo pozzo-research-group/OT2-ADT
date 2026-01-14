@@ -14,18 +14,21 @@ Automatic handling robots (ALH) are one of many high throughput tools that allow
 You can install this package using the GitHub repository in following steps: 
 * In your terminal, run git clone https://github.com/pozzo-research-group/OT2-ADT.git
 * Change the directory to `OT2_ADT` root directory, by running `cd OT2_ADT`
-* (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following lines:
+* (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following commands:
 
 	`conda env create --file environment.yml`
 	
 	`conda activate OT2_ADT`
-* Install the package by running `python setup.py install` in your terminal
+
+* To add the OT2_ADT kernel to jupyter notebook:
+    `conda install ipykernel` (ipykernel should already be installed with the environment, but if not, run this command)
+    `python -m ipykernel --user --name=OT2_ADT --display-name "OT2_ADT"
 
 ## Directory Organization
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
 - `OT2-ADT/`: directory with all files and modules
   - `ADT Data Analysis/`: directory with notebooks and scripts for analyzing UV-Vis data collected from the automated testing workflow. A walkthrough notebook with explanations has been provided, along with sample data in the resepctive sub-folders. A blank template of the notebook is also available.
-    - `Experimental Data/` : Folder containing zip files of membrane diffusion test results 
+    - `Experimental Data/` : Folder containing zip files of membrane diffusion test results
   - `Custom Labware/`: directory with customized hardware created for use with the OT2. The following .json files are the labware definitions created using the Opentrons custom labware tool. Each hcell file is unique to a specific dual H-cell assembly, as the custom builds and glassware all have slightly different measurements.
     - `20mlscintillationeven_12_wellplate_18000ul.json`
     - `adt_hcell_1_2.json` (for the 22 mL total volume H-cells)

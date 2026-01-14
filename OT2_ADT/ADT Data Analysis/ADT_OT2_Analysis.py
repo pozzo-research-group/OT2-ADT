@@ -122,7 +122,7 @@ def shortform_C(filename, absorptivity, dilution):
 
 
 def data_calculations(shortform_filename, absorptivity, dilution_factor,
-                      radius, H_cells, index_range):
+                      H_cells, index_range):
     '''
     Calculates membrane permeability (1e-5 cm/s) and diffusivity (1e-7 cm^2/s).
     
@@ -134,8 +134,6 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
         Absorption coefficient (obtained from calibration curve).
     dilution_factor : float
         Dilution factor between original H-cells and UV-Vis samples.
-    radius : float
-        Radius of exposed membrane area (cm²).
     H_cells : dict
         Dictionary mapping H-cell IDs to membrane properties.
         Must contain:
@@ -159,7 +157,6 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
     # diffusivities
     #H_cells is the dictionary
     columns = []
-    area_cm = np.pi*(radius)**2 #(cm^2)
  
     for key, value in H_cells.items():
         for column_name, column_data in df.items():
@@ -176,6 +173,8 @@ def data_calculations(shortform_filename, absorptivity, dilution_factor,
         C1 = H_cells[key]['cell 1']
         C0 = df[C1][0]+df[C2][0]
         vol_cc = H_cells[key]['total_volume']
+        radius = H_cells[key]['radius']
+        area_cm = np.pi*(radius)**2  # (cm^2)
         L_cm = H_cells[key]['membrane_L']/10000
 
         sample_D = H_cells[key]['sample'] + '_D'
