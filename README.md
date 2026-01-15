@@ -12,15 +12,19 @@ Automatic liquid handling robots (ALH) are one of many high throughput tools tha
 ## To get started
 You can install this package using the GitHub repository in following steps: 
 * In your terminal, run `git clone https://github.com/pozzo-research-group/OT2-ADT.git`
-* Change the directory to `OT2_ADT` root directory, by running `cd OT2-ADT`
+* Change the directory to `OT2-ADT` root directory, by running `cd OT2-ADT`
 * (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following commands:
 
-	`conda env create --file environment.yaml`
+	`conda env create -f environment.yaml`
 	
 	`conda activate OT2_ADT`
 
 * To add the OT2_ADT kernel to jupyter notebook:
-     `python -m ipykernel install --user --name=OT2_ADT --display-name "OT2_ADT"`
+
+  - `python -m ipykernel install --user --name=OT2_ADT --display-name "OT2_ADT"`
+     
+* **Note:** This environment installs opentrons version 8.7.0. However, interfacing with the OT2 is conducted through the Opentrons app, so you will need to ensure that both the robot and the app are on the same software versions.
+
 
 ## Directory Organization
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
@@ -124,10 +128,7 @@ Once the full OT2 layout is assembled and all parameters are defined in the test
 
 Upon completion of the iteration, the robot will calculate the amount of time remaining until the next round of sampling, based on the pre-defined sample frequency. During these "down times," the sample well plates can be removed from the plaform for UV-Vis characterization, then returned to the platform.
 
-The `ADT Testing Analysis/` folder has been provided as an optional guidance for processing and analyzing the data collected from this workflow. If using this approach, all analysis can be completed in the `OT2_ADT` environment. To add a kernel to jupyter notebook:
+The `ADT Testing Analysis/` folder has been provided as an optional guidance for processing and analyzing the data collected from this workflow. If using this approach, all analysis can be completed in the `OT2_ADT` environment.
 
-- `conda install jupyter ipykernel`
-- `python -m ipykernel --user --name=OT2_ADT --display-name "OT2_ADT"`
-
-The kernel can be accessed by launching jupyter notebook / lab within the environment, or from the base env.
+The kernel can be accessed by launching jupyter notebook / lab within the environment.
 
