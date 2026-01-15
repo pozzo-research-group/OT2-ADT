@@ -235,6 +235,8 @@ def progress_plots(full_df, variable, sample_names,
                              markersize=8, label='Receptor Chamber')
     permeability = mlines.Line2D([], [], color='black', ls='', marker='o',
                                  markersize=8, label='Permeability')
+    diffusivity = mlines.Line2D([], [], color='black', ls='', marker='o',
+                                 markersize=8, label='Diffusivity')
 
     # -------------------------
     # Plot concentration data
@@ -267,8 +269,10 @@ def progress_plots(full_df, variable, sample_names,
     ax2.set_xlabel('Time (hr)', fontsize=font)
     if variable == 'P':
         yaxisname = 'Permeability (1e-5 cm/s)'
+        legend = permeability
     elif variable == 'D':
         yaxisname = 'Diffusivity (1e-7 $cm^2/s$)'
+        legend = diffusivity
     else:
         yaxisname = 'Unknown'
 
@@ -278,7 +282,7 @@ def progress_plots(full_df, variable, sample_names,
     ax2.set_xlim(0, df['Time'].iloc[-1] + 5)
     ax2.xaxis.set_minor_locator(MultipleLocator(2))
     ax2.yaxis.set_minor_locator(MultipleLocator(y_subticks))
-    ax2.legend(handles=[permeability], fontsize=font-1, edgecolor='inherit')
+    ax2.legend(handles=[legend], fontsize=font-1, edgecolor='inherit')
     ax2.tick_params(labelsize=font)
 
     # -------------------------

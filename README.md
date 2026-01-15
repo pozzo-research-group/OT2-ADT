@@ -12,16 +12,15 @@ Automatic liquid handling robots (ALH) are one of many high throughput tools tha
 ## To get started
 You can install this package using the GitHub repository in following steps: 
 * In your terminal, run `git clone https://github.com/pozzo-research-group/OT2-ADT.git`
-* Change the directory to `OT2_ADT` root directory, by running `cd OT2_ADT`
+* Change the directory to `OT2_ADT` root directory, by running `cd OT2-ADT`
 * (Recommended)- Create an environment using the provided `environment.yml` file. To do so, run the following commands:
 
-	`conda env create --file environment.yml`
+	`conda env create --file environment.yaml`
 	
 	`conda activate OT2_ADT`
 
 * To add the OT2_ADT kernel to jupyter notebook:
-    `conda install ipykernel` (ipykernel should already be installed with the environment, but if not, run this command)
-    `python -m ipykernel --user --name=OT2_ADT --display-name "OT2_ADT"
+     `python -m ipykernel install --user --name=OT2_ADT --display-name "OT2_ADT"`
 
 ## Directory Organization
 This repo contains all OT2-DOE content from the original pozzo-research-group/OT2-DOE. The relevant content for the ADT workflow is as follows:
