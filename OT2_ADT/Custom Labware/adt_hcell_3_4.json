@@ -12,11 +12,11 @@
     "brand": {
         "brand": "ADT",
         "brandId": [
-            "22mL_Hcell_3_4"
+            "22mL_hcell_3_4"
         ]
     },
     "metadata": {
-        "displayName": "ADT_22mL_Hcell_3_4",
+        "displayName": "ADT_22mL_hcell_3_4",
         "displayCategory": "wellPlate",
         "displayVolumeUnits": "µL",
         "tags": []

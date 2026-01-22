@@ -352,10 +352,10 @@ def data_averages_1_4(df, H_cells, variable,
     H3_std = df[H3][H3_index].std()
     H4_std = df[H4][H4_index].std()
     
-    print(str(H1), ' = ', H1_ave.round(3), '+/-', H1_std.round(3))
-    print(str(H2), ' = ', H2_ave.round(3), '+/-', H2_std.round(3))
-    print(str(H3), ' = ', H3_ave.round(3), '+/-', H3_std.round(3))
-    print(str(H4), ' = ', H4_ave.round(3), '+/-', H4_std.round(3))
+    print(str(H1), ' = ', np.round(H1_ave, 3), '+/-', np.round(H1_std,3))
+    print(str(H2), ' = ', np.round(H2_ave, 3), '+/-', np.round(H2_std,3))
+    print(str(H3), ' = ', np.round(H3_ave, 3), '+/-', np.round(H3_std,3))
+    print(str(H4), ' = ', np.round(H4_ave, 3), '+/-', np.round(H4_std,3))
     return
 
 def data_averages_5_8(df, H_cells, variable,
@@ -411,10 +411,10 @@ def data_averages_5_8(df, H_cells, variable,
     H7_std = df[H7][H7_index].std()
     H8_std = df[H8][H8_index].std()
 
-    print(str(H5), ' = ', H5_ave.round(3), '+/-', H5_std.round(3))
-    print(str(H6), ' = ', H6_ave.round(3), '+/-', H6_std.round(3))
-    print(str(H7), ' = ', H7_ave.round(3), '+/-', H7_std.round(3))
-    print(str(H8), ' = ', H8_ave.round(3), '+/-', H8_std.round(3))
+    print(str(H5), ' = ', np.round(H5_ave, 3), '+/-', np.round(H5_std,3))
+    print(str(H6), ' = ', np.round(H6_ave, 3), '+/-', np.round(H6_std,3))
+    print(str(H7), ' = ', np.round(H7_ave, 3), '+/-', np.round(H7_std,3))
+    print(str(H8), ' = ', np.round(H8_ave, 3), '+/-', np.round(H8_std,3))
     return
 
 def data_averages_8(df, H_cells, variable,
@@ -497,12 +497,12 @@ def data_averages_8(df, H_cells, variable,
     H7_std = df[H7][H7_index].std()
     H8_std = df[H8][H8_index].std()
     
-    print(str(H1), ' = ', H1_ave.round(3), '+/-', H1_std.round(3))
-    print(str(H2), ' = ', H2_ave.round(3), '+/-', H2_std.round(3))
-    print(str(H3), ' = ', H3_ave.round(3), '+/-', H3_std.round(3))
-    print(str(H4), ' = ', H4_ave.round(3), '+/-', H4_std.round(3))
-    print(str(H5), ' = ', H5_ave.round(3), '+/-', H5_std.round(3))
-    print(str(H6), ' = ', H6_ave.round(3), '+/-', H6_std.round(3))
-    print(str(H7), ' = ', H7_ave.round(3), '+/-', H7_std.round(3))
-    print(str(H8), ' = ', H8_ave.round(3), '+/-', H8_std.round(3))
+    print(str(H1), ' = ', np.round(H1_ave, 3), '+/-', np.round(H1_std,3))
+    print(str(H2), ' = ', np.round(H2_ave, 3), '+/-', np.round(H2_std,3))
+    print(str(H3), ' = ', np.round(H3_ave, 3), '+/-', np.round(H3_std,3))
+    print(str(H4), ' = ', np.round(H4_ave, 3), '+/-', np.round(H4_std,3))
+    print(str(H5), ' = ', np.round(H5_ave, 3), '+/-', np.round(H5_std,3))
+    print(str(H6), ' = ', np.round(H6_ave, 3), '+/-', np.round(H6_std,3))
+    print(str(H7), ' = ', np.round(H7_ave, 3), '+/-', np.round(H7_std,3))
+    print(str(H8), ' = ', np.round(H8_ave, 3), '+/-', np.round(H8_std,3))
     return
